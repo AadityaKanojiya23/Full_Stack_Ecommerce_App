@@ -49,6 +49,16 @@ function DashboardContent() {
     }
   }, [sortedOrders.length]);
 
+  // Keep trackingOrder details in sync with the global orders array (for real-time socket status updates)
+  useEffect(() => {
+    if (trackingOrder) {
+      const updated = orders.find(o => o._id === trackingOrder._id);
+      if (updated && JSON.stringify(updated) !== JSON.stringify(trackingOrder)) {
+        setTrackingOrder(updated);
+      }
+    }
+  }, [orders, trackingOrder]);
+
   const handleAddNewAddress = async (e) => {
     e.preventDefault();
     if (!addrName || !addrPhone || !addrStreet || !addrCity || !addrState || !addrZip) return;

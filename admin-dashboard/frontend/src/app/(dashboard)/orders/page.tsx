@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Eye } from 'lucide-react';
 import api from '@/lib/api';
+import { io } from 'socket.io-client';
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -11,6 +12,26 @@ export default function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    const socketURL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
+    const socket = io(socketURL);
+
+    socket.on('orderCreated', (newOrder: any) => {
+      setOrders((prev) => {
+        if (prev.some((o) => o._id === newOrder._id)) return prev;
+        return [newOrder, ...prev];
+      });
+    });
+
+    socket.on('orderUpdated', (updatedOrder: any) => {
+      setOrders((prev) => prev.map((o) => (o._id === updatedOrder._id ? updatedOrder : o)));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const fetchOrders = async () => {
@@ -33,7 +54,7 @@ export default function OrdersPage() {
     }
   };
 
-  if (loading) return <div>Loading orders...</div>;
+  if (loading) return <div className="p-6 text-gray-500 font-medium">Loading orders...</div>;
 
   return (
     <div>
@@ -54,18 +75,27 @@ export default function OrdersPage() {
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {orders.map((order) => (
-                <tr key={order._id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">#{order._id.substring(0, 8)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.shippingAddress?.name || order.user?.name || 'Guest'}</td>
+                <tr key={order._id} className="hover:bg-gray-50/50 transition-colors">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{order._id.substring(0, 8)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <div className="font-semibold text-gray-800">
+                      {order.shippingAddress?.name || order.user?.name || 'Guest'}
+                    </div>
+                    {order.shippingAddress?.phone && (
+                      <div className="text-xs text-gray-500 font-medium mt-0.5">
+                        📞 {order.shippingAddress.phone}
+                      </div>
+                    )}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {new Date(order.createdAt).toLocaleDateString()}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${order.pricing?.totalAmount?.toFixed(2)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">₹{order.pricing?.totalAmount?.toFixed(2)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm">
                     <select
                       value={order.status}
                       onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-black focus:border-black sm:text-sm rounded-md"
+                      className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-black focus:border-black sm:text-sm rounded-md border"
                     >
                       <option value="Confirmed">Order Confirmed</option>
                       <option value="Baking">Baking in Progress</option>
@@ -76,7 +106,7 @@ export default function OrdersPage() {
                     </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                    <Link href={`/orders/${order._id}`} className="text-blue-600 hover:text-blue-900 flex items-center justify-end">
+                    <Link href={`/orders/${order._id}`} className="text-blue-600 hover:text-blue-900 inline-flex items-center justify-end">
                       <Eye className="w-4 h-4 mr-1" /> View
                     </Link>
                   </td>

@@ -110,8 +110,11 @@ export default function OrderTrackingPage() {
             <h2 className="text-lg font-medium text-gray-900 mb-4">Customer Details</h2>
             <div className="text-sm text-gray-600 space-y-2">
               <p><span className="font-medium text-gray-900">Name:</span> {order.shippingAddress?.name || order.user?.name || 'Guest'}</p>
+              {order.shippingAddress?.phone && (
+                <p><span className="font-medium text-gray-900">Phone:</span> {order.shippingAddress.phone}</p>
+              )}
               <p><span className="font-medium text-gray-900">Email:</span> {order.user?.email || 'N/A'}</p>
-              <p><span className="font-medium text-gray-900">Address:</span> {order.shippingAddress ? `${order.shippingAddress.street}, ${order.shippingAddress.city}` : 'N/A'}</p>
+              <p><span className="font-medium text-gray-900">Address:</span> {order.shippingAddress ? `${order.shippingAddress.street}, ${order.shippingAddress.city}, ${order.shippingAddress.state} - ${order.shippingAddress.zipCode}` : 'N/A'}</p>
               <p><span className="font-medium text-gray-900">Payment:</span> {order.payment?.status || 'Pending'}</p>
             </div>
           </div>
@@ -126,7 +129,7 @@ export default function OrderTrackingPage() {
               ))}
               <div className="pt-4 border-t border-gray-200 flex justify-between font-medium">
                 <span>Total Amount</span>
-                <span>${order.pricing?.totalAmount?.toFixed(2)}</span>
+                <span>₹{order.pricing?.totalAmount?.toFixed(2)}</span>
               </div>
             </div>
           </div>

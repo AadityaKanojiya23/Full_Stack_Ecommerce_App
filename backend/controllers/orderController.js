@@ -103,6 +103,7 @@ export const createOrder = async (req, res) => {
 
     if (dbStatus.useMockData) {
       const newOrder = addOrderStore(orderData);
+      if (req.io) req.io.emit('orderCreated', newOrder);
       return res.status(201).json({ success: true, order: newOrder });
     } else {
       // Real DB insertion
@@ -133,6 +134,7 @@ export const createOrder = async (req, res) => {
         });
       }
 
+      if (req.io) req.io.emit('orderCreated', savedOrder);
       return res.status(201).json({ success: true, order: savedOrder });
     }
   } catch (error) {
