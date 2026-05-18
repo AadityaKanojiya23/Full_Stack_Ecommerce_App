@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { Package, ShoppingBag, Users, DollarSign } from 'lucide-react';
 import api from '@/lib/api';
 import Cookies from 'js-cookie';
+import { io } from 'socket.io-client';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -13,6 +14,7 @@ export default function Dashboard() {
     revenue: 0,
   });
   const [recentOrders, setRecentOrders] = useState<any[]>([]);
+  const [cartActivities, setCartActivities] = useState<any[]>([]);
 
   const fetchStats = async () => {
     // Wait until token is available
@@ -42,6 +44,19 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchStats();
+  }, []);
+
+  useEffect(() => {
+    const socketURL = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api').replace('/api', '');
+    const socket = io(socketURL);
+
+    socket.on('adminCartActivity', (activity: any) => {
+      setCartActivities((prev) => [activity, ...prev].slice(0, 15));
+    });
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const cards = [
@@ -79,52 +94,104 @@ export default function Dashboard() {
         ))}
       </div>
 
-      {/* Recent Orders Table */}
-      <div className="bg-white rounded-lg border border-gray-200">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h2 className="text-base font-semibold text-gray-900">Recent Orders</h2>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-100">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-100">
-              {recentOrders.map((order) => (
-                <tr key={order._id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.shippingAddress?.name || order.user?.name || 'Guest'}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.user?.email || 'N/A'}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${order.pricing?.totalAmount?.toFixed(2)}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${order.payment?.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
-                      {order.payment?.status || 'Pending'}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColor[order.status] || 'bg-gray-100 text-gray-700'}`}>
-                      {order.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(order.createdAt).toLocaleDateString()}
-                  </td>
-                </tr>
-              ))}
-              {recentOrders.length === 0 && (
+      {/* Grid for Orders Table and Live Cart tracker */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        {/* Recent Orders Table (2 Cols on Desktop) */}
+        <div className="lg:col-span-2 bg-white rounded-lg border border-gray-200">
+          <div className="px-6 py-4 border-b border-gray-100">
+            <h2 className="text-base font-semibold text-gray-900">Recent Orders</h2>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-100">
+              <thead className="bg-gray-50">
                 <tr>
-                  <td colSpan={6} className="px-6 py-6 text-center text-gray-400 text-sm">Loading orders...</td>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Payment</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-100">
+                {recentOrders.map((order) => (
+                  <tr key={order._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.shippingAddress?.name || order.user?.name || 'Guest'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.user?.email || 'N/A'}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹{(order.pricing?.totalAmount || order.totalPrice)?.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${order.payment?.status === 'Paid' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
+                        {order.payment?.status || 'Pending'}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${statusColor[order.status] || 'bg-gray-100 text-gray-700'}`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(order.createdAt).toLocaleDateString()}
+                    </td>
+                  </tr>
+                ))}
+                {recentOrders.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="px-6 py-6 text-center text-gray-400 text-sm">Loading orders...</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
+
+        {/* Live Cart Activity (1 Col on Desktop) */}
+        <div className="bg-white rounded-lg border border-gray-200 p-5 flex flex-col h-[480px] overflow-hidden">
+          <div className="border-b border-gray-100 pb-3 mb-4 flex items-center justify-between">
+            <h2 className="text-base font-semibold text-gray-900 flex items-center gap-2">
+              <span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-ping"></span>
+              Live Cart Activity
+            </h2>
+            <span className="text-[10px] font-semibold text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-200 uppercase tracking-wider animate-pulse">
+              Live
+            </span>
+          </div>
+
+          <div className="flex-grow overflow-y-auto space-y-3 pr-1 no-scrollbar">
+            {cartActivities.map((act, i) => (
+              <div key={i} className="text-xs p-3 rounded-lg border border-gray-100 bg-gray-50/50 hover:bg-gray-50 transition-all duration-300 transform translate-y-0 scale-100">
+                <div className="flex justify-between items-center mb-1">
+                  <span className="font-semibold text-gray-800">{act.user}</span>
+                  <span className="text-[10px] text-gray-400">
+                    {new Date(act.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                  </span>
+                </div>
+                <div className="text-gray-600 flex items-start gap-1.5 mt-1">
+                  {act.type === 'add' && <span className="w-2 h-2 mt-1 rounded-full bg-green-500 shrink-0"></span>}
+                  {act.type === 'update' && <span className="w-2 h-2 mt-1 rounded-full bg-yellow-500 shrink-0"></span>}
+                  {act.type === 'remove' && <span className="w-2 h-2 mt-1 rounded-full bg-red-500 shrink-0"></span>}
+                  
+                  <span className="leading-tight">
+                    {act.type === 'add' && 'Added '}
+                    {act.type === 'update' && 'Updated quantity of '}
+                    {act.type === 'remove' && 'Removed '}
+                    <strong className="text-gray-800">{act.productName}</strong>
+                    {act.quantity && ` (${act.quantity}x)`}
+                    {act.type === 'add' && ` to cart`}
+                  </span>
+                </div>
+              </div>
+            ))}
+            {cartActivities.length === 0 && (
+              <div className="h-full flex flex-col items-center justify-center text-center text-gray-400 py-16">
+                <ShoppingBag className="w-8 h-8 mb-2 animate-bounce text-gray-300" />
+                <p className="text-xs font-semibold text-gray-500">Waiting for live activity...</p>
+                <p className="text-[10px] text-gray-400 mt-1 max-w-[180px] mx-auto">Actions from client shoppers will display here instantly!</p>
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
     </div>
   );

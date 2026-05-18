@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { io } from 'socket.io-client';
 
 const AppContext = createContext();
@@ -24,10 +24,13 @@ export const AppProvider = ({ children }) => {
   const [isBackendOnline, setIsBackendOnline] = useState(false);
   const [adminStats, setAdminStats] = useState(null);
 
+  const socketRef = useRef(null);
+
   // Real-Time Socket Connection
   useEffect(() => {
     const socketURL = API_BASE.replace('/api', '');
     const socket = io(socketURL);
+    socketRef.current = socket;
 
     socket.on('productUpdated', (updatedProduct) => {
       setProducts(prev => prev.map(p => p._id === updatedProduct._id ? updatedProduct : p));
@@ -652,6 +655,17 @@ export const AppProvider = ({ children }) => {
       updatedCart[existingIndex].quantity += qty;
       setCart(updatedCart);
       showToast(`Updated quantity of ${product.name} in cart!`, 'success');
+      
+      if (socketRef.current) {
+        socketRef.current.emit('cartActivity', {
+          type: 'update',
+          user: user ? user.name : 'Guest User',
+          productName: product.name,
+          quantity: updatedCart[existingIndex].quantity,
+          price: itemPrice,
+          timestamp: new Date().toISOString()
+        });
+      }
     } else {
       const newItem = {
         cartItemId,
@@ -673,6 +687,17 @@ export const AppProvider = ({ children }) => {
       };
       setCart([...cart, newItem]);
       showToast(`Added ${product.name} to cart!`, 'success');
+
+      if (socketRef.current) {
+        socketRef.current.emit('cartActivity', {
+          type: 'add',
+          user: user ? user.name : 'Guest User',
+          productName: product.name,
+          quantity: qty,
+          price: itemPrice,
+          timestamp: new Date().toISOString()
+        });
+      }
     }
   };
 
@@ -685,12 +710,36 @@ export const AppProvider = ({ children }) => {
       item.cartItemId === cartItemId ? { ...item, quantity: qty } : item
     );
     setCart(updated);
+
+    const changedItem = cart.find(item => item.cartItemId === cartItemId);
+    if (changedItem && socketRef.current) {
+      socketRef.current.emit('cartActivity', {
+        type: 'update',
+        user: user ? user.name : 'Guest User',
+        productName: changedItem.name,
+        quantity: qty,
+        price: changedItem.price,
+        timestamp: new Date().toISOString()
+      });
+    }
   };
 
   const removeFromCart = (cartItemId) => {
+    const itemToRemove = cart.find(item => item.cartItemId === cartItemId);
     const updated = cart.filter(item => item.cartItemId !== cartItemId);
     setCart(updated);
     showToast('Removed item from cart', 'info');
+
+    if (itemToRemove && socketRef.current) {
+      socketRef.current.emit('cartActivity', {
+        type: 'remove',
+        user: user ? user.name : 'Guest User',
+        productName: itemToRemove.name,
+        quantity: itemToRemove.quantity,
+        price: itemToRemove.price,
+        timestamp: new Date().toISOString()
+      });
+    }
   };
 
   const clearCart = () => {

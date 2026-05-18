@@ -27,6 +27,21 @@ const io = new Server(server, {
   }
 });
 
+// Configure Socket.IO event listeners
+io.on('connection', (socket) => {
+  console.log(`🔌 Client connected to Socket.IO: ${socket.id}`);
+
+  socket.on('cartActivity', (data) => {
+    console.log('🛒 Real-Time Cart Activity Received:', data);
+    // Broadcast to everyone else (like the admin panel)
+    io.emit('adminCartActivity', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log(`🔌 Client disconnected from Socket.IO: ${socket.id}`);
+  });
+});
+
 // Inject io into the request object so controllers can emit events
 app.use((req, res, next) => {
   req.io = io;
