@@ -394,10 +394,15 @@ function GlobalLayout({ children }) {
               >
                 <Menu className="w-6 h-6" />
               </button>
-              <Link href="/" className="flex items-center gap-2 group">
-                <span className="text-2xl font-medium tracking-tight text-navy font-serif flex items-center gap-1 transition-transform group-hover:scale-102">
-                  Amore<span className="text-orange">Cakes</span>
-                  <span className="text-[10px] bg-orange/15 text-orange font-sans uppercase px-2 py-0.5 rounded-full font-medium tracking-wider ml-1">Boutique</span>
+              <Link href="/" className="flex items-center gap-3 group">
+                <img 
+                  src="/logo.png" 
+                  alt="Amore Cakes Logo" 
+                  className="w-10 h-10 object-contain rounded-full border border-orange/20 shadow-sm transition-transform duration-300 group-hover:rotate-12" 
+                />
+                <span className="text-xl font-semibold tracking-tight text-navy font-serif flex items-center gap-0.5">
+                  Amore<span className="text-orange font-bold">Cakes</span>
+                  <span className="text-[9px] bg-orange/10 text-orange font-sans uppercase px-2 py-0.5 rounded-full font-medium tracking-wider ml-1.5 hidden sm:inline-block">Boutique</span>
                 </span>
               </Link>
             </div>

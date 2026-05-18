@@ -47,9 +47,16 @@ const Sidebar = ({ isOpen, setIsOpen }: { isOpen: boolean, setIsOpen: (val: bool
       {/* Sidebar */}
       <div className={`fixed inset-y-0 left-0 w-64 bg-white border-r border-gray-200 z-50 transform transition-transform duration-200 ease-in-out md:translate-x-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="h-full flex flex-col">
-          <div className="px-6 py-5 border-b border-gray-200 flex justify-between items-center">
-            <Link href="/" className="text-xl font-bold text-gray-800">
-              Amore Admin
+          <div className="px-5 py-4 border-b border-gray-200 flex justify-between items-center">
+            <Link href="/" className="flex items-center gap-3 group">
+              <img 
+                src="/logo.png" 
+                alt="Amore Cakes Logo" 
+                className="w-9 h-9 object-contain rounded-full border border-gray-200 shadow-sm" 
+              />
+              <span className="text-lg font-bold text-gray-800 tracking-tight">
+                Amore <span className="text-orange-500 font-extrabold">Admin</span>
+              </span>
             </Link>
             <button className="md:hidden" onClick={() => setIsOpen(false)}>
               <X className="w-5 h-5 text-gray-500" />
