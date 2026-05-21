@@ -4,7 +4,7 @@ import { useSearchParams } from 'next/navigation';
 import { useApp } from '../../../context/AppContext';
 import { 
   Star, Heart, ShoppingBag, Eye, Sliders, ArrowUpDown, 
-  Trash, Search, Check, RefreshCw, X, ChevronRight 
+  Trash, Search, Check, RefreshCw, X, ChevronRight, Zap
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -269,77 +269,93 @@ function CategoryContent({ slug }) {
               </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {filtered.map((prod) => {
                 const isWishlisted = wishlist.includes(prod._id);
                 const isOut = prod.inventory <= 0 || prod.isSoldOut;
                 return (
                   <div 
                     key={prod._id}
-                    className={`bg-card-bg border border-border-color rounded-3xl p-4 flex flex-col justify-between group hover:border-orange amore-card shadow-sm transition-all duration-300 relative overflow-hidden ${isOut ? 'opacity-80' : ''}`}
+                    className={`bg-white border border-border-color/50 rounded-2xl flex flex-col justify-between shadow-sm relative overflow-hidden ${isOut ? 'opacity-80' : ''}`}
                   >
-                    {/* Wishlist Button */}
-                    <button 
-                      onClick={() => toggleWishlist(prod._id)}
-                      className="absolute top-4 right-4 p-1.5 bg-card-bg hover:bg-cream border border-border-color rounded-full text-navy transition-colors z-20 shadow-sm"
-                    >
-                      <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-navy/60'}`} />
-                    </button>
-
-                    <Link href={`/product/${prod.slug}`} className="space-y-3 cursor-pointer block relative">
-                      <div className="rounded-2xl overflow-hidden aspect-video border border-border-color relative">
-                        <img 
-                          src={prod.images[0]} 
-                          alt={prod.name} 
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-103"
-                        />
-                        {isOut && (
-                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-10 backdrop-blur-[2px]">
-                            <span className="text-white font-bold text-[10px] tracking-widest uppercase border border-white px-3 py-1 rounded transform -rotate-12 bg-black/60 shadow-lg shadow-black/50">Sold Out</span>
-                          </div>
-                        )}
-                        {prod.isPremium && !isOut && (
-                          <span className="absolute bottom-2 left-2 bg-orange text-white font-medium text-[9px] px-2 py-0.5 rounded-full border border-orange/30 z-10">Premium</span>
-                        )}
-                      </div>
-
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-1 text-[10px] text-navy/60 font-medium">
-                          <Star className="w-3.5 h-3.5 fill-gold text-gold" />
-                          <span>{prod.rating} ({prod.reviewsCount} orders)</span>
+                    {/* Top Section: Shorter 4:3 Image & Badges */}
+                    <div className="relative rounded-t-2xl overflow-hidden aspect-square border-b border-border-color/20 bg-cream/10">
+                      <img 
+                        src={prod.images[0]} 
+                        alt={prod.name} 
+                        className="w-full h-full object-cover"
+                      />
+                      {isOut && (
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center z-10 backdrop-blur-[2px]">
+                          <span className="text-white font-bold text-[10px] tracking-widest uppercase border border-white px-3 py-1 rounded transform -rotate-12 bg-black/60 shadow-lg shadow-black/50">Sold Out</span>
                         </div>
-                        <h3 className="font-serif font-medium text-navy text-sm leading-tight truncate group-hover:text-orange transition-colors">{prod.name}</h3>
-                        <p className="text-navy/50 text-[10px] truncate leading-normal font-normal">{prod.description}</p>
-                      </div>
-                    </Link>
-
-                    {/* Lower Card Section */}
-                    <div className="mt-3 pt-3 border-t border-border-color flex items-center justify-between relative z-20">
-                      <div>
-                        <span className={`font-medium text-base ${isOut ? 'text-navy/50' : 'text-orange'}`}>₹{prod.discountPrice || prod.price}</span>
-                        {prod.discountPrice && (
-                          <span className="text-navy/35 line-through text-xs ml-1 font-medium">₹{prod.price}</span>
-                        )}
-                      </div>
-                      <div className="flex gap-1.5">
-                        <Link 
-                          href={isOut ? '#' : `/product/${prod.slug}`}
-                          className={`p-1.5 border border-border-color rounded-full transition-all ${isOut ? 'text-navy/30 cursor-not-allowed bg-cream/50 pointer-events-none' : 'text-navy hover:bg-cream'}`}
-                          title={isOut ? "Out of Stock" : "Explore Options"}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Link>
-                        <button 
-                          onClick={() => !isOut && handleSimpleAddToCart(prod)}
-                          disabled={isOut}
-                          className={`p-1.5 rounded-full transition-all shadow-sm ${isOut ? 'bg-navy/10 text-navy/30 cursor-not-allowed' : 'bg-orange hover:bg-orange-hover hover:scale-105 text-white'}`}
-                          title={isOut ? "Out of Stock" : "Express Add to Bag"}
-                        >
-                          <ShoppingBag className="w-4 h-4" />
-                        </button>
-                      </div>
+                      )}
+                      {/* Best Seller / Trending badge */}
+                      {!isOut && (
+                        prod.isPremium ? (
+                          <span className="absolute top-2.5 left-2.5 bg-orange text-white font-semibold text-[8px] uppercase tracking-wider px-2 py-0.5 rounded-full shadow z-10">Premium</span>
+                        ) : prod.reviewsCount > 30 ? (
+                          <span className="absolute top-2.5 left-2.5 bg-[#e58a13] text-white font-semibold text-[8px] uppercase tracking-wider px-2 py-0.5 rounded-full shadow z-10">Trending</span>
+                        ) : (
+                          <span className="absolute top-2.5 left-2.5 bg-orange text-white font-semibold text-[8px] uppercase tracking-wider px-2 py-0.5 rounded-full shadow z-10">Best Seller</span>
+                        )
+                      )}
+                      
+                      {/* Wishlist Button */}
+                      <button 
+                        onClick={() => toggleWishlist(prod._id)}
+                        className="absolute top-2.5 right-2.5 p-1 bg-white/85 hover:bg-white border border-border-color/40 rounded-full text-navy transition-colors z-20 shadow-sm"
+                      >
+                        <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-navy/60'}`} />
+                      </button>
                     </div>
 
+                    {/* Bottom Section: Compact Product Information & Actions */}
+                    <div className="p-3 flex-grow flex flex-col justify-between space-y-2.5">
+                      <Link href={`/product/${prod.slug}`} className="space-y-0.5 cursor-pointer block">
+                        {/* Rating */}
+                        <div className="flex items-center gap-1 text-[8.5px] sm:text-[9px] text-navy/60 font-medium">
+                          <Star className="w-2.5 h-2.5 fill-gold text-gold" />
+                          <span>{prod.rating} ({prod.reviewsCount} orders)</span>
+                        </div>
+                        
+                        {/* Title */}
+                        <h3 className="font-sans font-bold text-navy text-[11px] sm:text-xs leading-snug truncate">{prod.name}</h3>
+                      </Link>
+
+                      <div className="space-y-1.5">
+                        {/* Price Details */}
+                        <div className="flex items-baseline gap-1">
+                          <span className={`font-bold text-xs sm:text-sm ${isOut ? 'text-navy/50' : 'text-orange'}`}>₹{prod.discountPrice || prod.price}</span>
+                          {prod.discountPrice && (
+                            <span className="text-navy/35 line-through text-[9px] sm:text-[10px] font-medium">₹{prod.price}</span>
+                          )}
+                          <span className="text-navy/40 text-[8px] font-semibold uppercase tracking-wider ml-auto">Per Cake</span>
+                        </div>
+
+                        {/* Add to Cart & Buy Now Buttons */}
+                        <div className="flex gap-1 pt-1 border-t border-border-color/10">
+                          <button 
+                            onClick={() => !isOut && handleSimpleAddToCart(prod)}
+                            disabled={isOut}
+                            className={`flex-1 flex items-center justify-center gap-0.5 py-1 px-0.5 rounded-full border text-[8px] sm:text-[9px] font-extrabold uppercase tracking-wider ${isOut ? 'border-navy/10 text-navy/30 cursor-not-allowed bg-cream/10' : 'border-orange text-orange hover:bg-orange/5 bg-white'}`}
+                            title="Add to Shopping Cart"
+                          >
+                            <ShoppingBag className="w-2.5 h-2.5 shrink-0" />
+                            <span>Add to Cart</span>
+                          </button>
+
+                          <Link
+                            href={isOut ? '#' : `/product/${prod.slug}`}
+                            className={`flex-1 flex items-center justify-center gap-0.5 py-1 px-0.5 rounded-full text-[8px] sm:text-[9px] font-extrabold text-white uppercase tracking-wider text-center ${isOut ? 'bg-navy/10 text-navy/30 cursor-not-allowed pointer-events-none' : 'bg-green-600 hover:bg-green-700 shadow-sm'}`}
+                            title="Buy Cake Now"
+                          >
+                            <Zap className="w-2.5 h-2.5 shrink-0 fill-white" />
+                            <span>Buy Now</span>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 );
               })}

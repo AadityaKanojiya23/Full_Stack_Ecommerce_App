@@ -472,15 +472,15 @@ export default function ProductDetailsPage({ params }) {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {similar.map((prod) => (
-              <div key={prod._id} className="bg-card-bg border border-border-color rounded-3xl p-4 flex flex-col justify-between group hover:border-orange amore-card shadow-sm transition-all relative">
-                <Link href={`/product/${prod.slug}`} className="cursor-pointer space-y-3 block">
-                  <div className="rounded-xl overflow-hidden aspect-video border border-border-color">
-                    <img src={prod.images[0]} alt={prod.name} className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500" />
+              <div key={prod._id} className="bg-white border border-border-color/50 rounded-2xl p-3 flex flex-col justify-between shadow-sm relative overflow-hidden">
+                <Link href={`/product/${prod.slug}`} className="cursor-pointer space-y-2.5 block">
+                  <div className="rounded-xl overflow-hidden aspect-square border border-border-color/20 bg-cream/10">
+                    <img src={prod.images[0]} alt={prod.name} className="w-full h-full object-cover" />
                   </div>
-                  <h3 className="font-serif font-medium text-navy text-sm truncate leading-tight group-hover:text-orange transition-colors">{prod.name}</h3>
+                  <h3 className="font-sans font-bold text-navy text-[11px] sm:text-xs truncate leading-tight">{prod.name}</h3>
                   <div className="flex justify-between items-center mt-2">
-                    <span className="text-orange font-medium text-sm">₹{prod.discountPrice || prod.price}</span>
-                    <span className="text-[10px] bg-orange/15 text-orange font-medium px-1.5 py-0.5 rounded uppercase border border-orange/20">Verify</span>
+                    <span className="text-orange font-bold text-xs sm:text-sm">₹{prod.discountPrice || prod.price}</span>
+                    <span className="text-[9px] bg-orange/15 text-orange font-semibold px-2 py-0.5 rounded-full uppercase border border-orange/20">View Detail</span>
                   </div>
                 </Link>
               </div>

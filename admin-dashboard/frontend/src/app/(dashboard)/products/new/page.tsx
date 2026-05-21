@@ -62,7 +62,7 @@ export default function NewProductPage() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700">Off Price (₹) <span className="text-gray-400 font-normal text-xs">(Optional)</span></label>
+            <label className="block text-sm font-medium text-gray-700">Offer Price (₹) <span className="text-gray-400 font-normal text-xs">(Optional)</span></label>
             <input type="number" step="0.01" name="discountPrice" value={formData.discountPrice} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-black focus:border-black sm:text-sm" placeholder="Leave empty for no discount" />
           </div>
 

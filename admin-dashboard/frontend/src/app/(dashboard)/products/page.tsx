@@ -136,7 +136,7 @@ function ProductsContent() {
                           />
                         </div>
                         <div className="flex items-center justify-between gap-1">
-                          <span className="text-[10px] text-gray-500 font-semibold">Off:</span>
+                          <span className="text-[10px] text-gray-500 font-semibold">Offer:</span>
                           <input
                             type="number"
                             value={editDiscountPriceVal}

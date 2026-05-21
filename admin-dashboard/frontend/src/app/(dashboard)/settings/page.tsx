@@ -22,7 +22,7 @@ export default function SettingsPage() {
             <h2 className="text-lg font-medium text-gray-900 mb-4">Store Settings</h2>
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Delivery Charge ($)</label>
+                <label className="block text-sm font-medium text-gray-700">Delivery Charge (₹)</label>
                 <input 
                   type="number" 
                   step="0.01" 

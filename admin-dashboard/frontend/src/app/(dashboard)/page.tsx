@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Package, ShoppingBag, Users, DollarSign } from 'lucide-react';
+import { Package, ShoppingBag, Users, IndianRupee } from 'lucide-react';
 import api from '@/lib/api';
 import Cookies from 'js-cookie';
 import { io } from 'socket.io-client';
@@ -60,7 +60,7 @@ export default function Dashboard() {
   }, []);
 
   const cards = [
-    { name: 'Total Revenue', value: `$${stats.revenue.toFixed(2)}`, icon: DollarSign, color: 'text-green-600', bg: 'bg-green-50' },
+    { name: 'Total Revenue', value: `₹${stats.revenue.toFixed(2)}`, icon: IndianRupee, color: 'text-green-600', bg: 'bg-green-50' },
     { name: 'Total Orders', value: stats.totalOrders, icon: ShoppingBag, color: 'text-blue-600', bg: 'bg-blue-50' },
     { name: 'Pending Orders', value: stats.pendingOrders, icon: Package, color: 'text-yellow-600', bg: 'bg-yellow-50' },
     { name: 'Delivered', value: stats.deliveredOrders, icon: Users, color: 'text-purple-600', bg: 'bg-purple-50' },
