@@ -382,25 +382,25 @@ function GlobalLayout({ children }) {
             ? 'bg-transparent border-b border-transparent shadow-none backdrop-blur-none' 
             : 'bg-background/95 backdrop-blur-sm border-b border-border-color shadow-sm'
         }`}>
-          <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 transition-all duration-300 ${
+          <div className={`max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 flex items-center justify-between gap-1.5 sm:gap-4 transition-all duration-300 ${
             isScrolled ? 'py-1.5' : 'py-3'
           }`}>
             
             {/* Logo on Left */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1.5 sm:gap-4">
               <button 
-                className="lg:hidden p-1.5 hover:bg-cream rounded-full text-navy transition-all duration-200"
+                className="lg:hidden p-1 sm:p-1.5 hover:bg-cream rounded-full text-navy transition-all duration-200"
                 onClick={() => setMobileMenuOpen(true)}
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
-              <Link href="/" className="flex items-center gap-3 group">
+              <Link href="/" className="flex items-center gap-1.5 sm:gap-3 group">
                 <img 
                   src="/logo.png" 
                   alt="Amore Cakes Logo" 
-                  className="w-10 h-10 object-contain rounded-full border border-orange/20 shadow-sm transition-transform duration-300 group-hover:rotate-12" 
+                  className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-full border border-orange/20 shadow-sm transition-transform duration-300 group-hover:rotate-12" 
                 />
-                <span className="text-xl font-semibold tracking-tight text-navy font-serif flex items-center gap-0.5">
+                <span className="text-[15px] sm:text-xl font-semibold tracking-tight text-navy font-serif flex items-center gap-0.5">
                   Amore<span className="text-orange font-bold">Cakes</span>
                   <span className="text-[9px] bg-orange/10 text-orange font-sans uppercase px-2 py-0.5 rounded-full font-medium tracking-wider ml-1.5 hidden sm:inline-block">Boutique</span>
                 </span>
@@ -444,7 +444,7 @@ function GlobalLayout({ children }) {
             </form>
 
             {/* Right Nav Action Panel */}
-            <div className="flex items-center gap-3 md:gap-5 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-3 md:gap-5 shrink-0">
               {/* Theme Toggle (Desktop/Tablet only) */}
               <button 
                 onClick={toggleTheme} 
@@ -460,15 +460,15 @@ function GlobalLayout({ children }) {
                   <div className="relative">
                     <button 
                       onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                      className="flex items-center gap-1.5 text-sm font-normal hover:text-orange cursor-pointer py-1.5 px-3 rounded-full hover:bg-cream transition-all border border-transparent hover:border-border-color"
+                      className="flex items-center gap-1 sm:gap-1.5 text-sm font-normal hover:text-orange cursor-pointer py-1 px-1.5 sm:py-1.5 sm:px-3 rounded-full hover:bg-cream transition-all border border-transparent hover:border-border-color"
                     >
                       <img 
                         src={user.avatar} 
                         alt="avatar" 
-                        className="w-7 h-7 rounded-full border border-orange object-cover"
+                        className="w-6 h-6 sm:w-7 sm:h-7 rounded-full border border-orange object-cover"
                       />
                       <span className="hidden md:block max-w-[80px] truncate text-navy font-medium">{user.name.split(' ')[0]}</span>
-                      <ChevronDown className="w-3.5 h-3.5 text-navy/60" />
+                      <ChevronDown className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-navy/60" />
                     </button>
                     {profileDropdownOpen && (
                       <div className="absolute right-0 mt-2 w-52 bg-card-bg border border-border-color rounded-2xl shadow-xl py-2 z-50 animate-float">
@@ -499,15 +499,16 @@ function GlobalLayout({ children }) {
                   <div className="overflow-hidden rounded-full shadow-sm border border-orange/20">
                     <button 
                       onClick={() => loginWithGoogle()}
-                      className="flex items-center gap-2 px-4 py-1.5 bg-white hover:bg-gray-50 transition-colors"
+                      className="flex items-center gap-1 sm:gap-2 px-2.5 py-1 sm:px-4 sm:py-1.5 bg-white hover:bg-gray-50 transition-colors"
                     >
-                      <svg viewBox="0 0 48 48" className="w-5 h-5">
+                      <svg viewBox="0 0 48 48" className="w-4 h-4 sm:w-5 sm:h-5 shrink-0">
                         <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
                         <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
                         <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
                         <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
                       </svg>
-                      <span className="text-sm font-medium text-gray-700">Sign in with Google</span>
+                      <span className="text-xs sm:text-sm font-medium text-gray-700 hidden sm:inline-block">Sign in with Google</span>
+                      <span className="text-xs font-medium text-gray-700 sm:hidden">Sign In</span>
                     </button>
                   </div>
                 )}
@@ -524,7 +525,7 @@ function GlobalLayout({ children }) {
               </Link>
 
               {/* Cart Icon */}
-              <Link href="/cart" className="relative p-2 hover:bg-cream rounded-full text-navy transition-colors" title="Cart Drawer">
+              <Link href="/cart" className="relative p-1.5 sm:p-2 hover:bg-cream rounded-full text-navy transition-colors" title="Cart Drawer">
                 <ShoppingBag className="w-5 h-5" />
                 {cart.length > 0 && (
                   <span className="absolute top-0.5 right-0.5 bg-orange text-white font-medium text-[10px] w-4.5 h-4.5 rounded-full flex items-center justify-center border border-card-bg shadow-sm">
