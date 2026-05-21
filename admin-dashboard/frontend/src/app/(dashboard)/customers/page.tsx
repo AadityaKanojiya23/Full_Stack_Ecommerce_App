@@ -1,9 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 
-export default function CustomersPage() {
+function CustomersContent() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const searchParamVal = searchParams.get('search') || '';
+
   const [customers, setCustomers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -11,6 +17,10 @@ export default function CustomersPage() {
   useEffect(() => {
     fetchCustomers();
   }, []);
+
+  useEffect(() => {
+    setSearch(searchParamVal);
+  }, [searchParamVal]);
 
   const fetchCustomers = async () => {
     try {
@@ -23,9 +33,24 @@ export default function CustomersPage() {
     }
   };
 
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearch(val);
+    
+    const params = new URLSearchParams(searchParams.toString());
+    if (val) {
+      params.set('search', val);
+    } else {
+      params.delete('search');
+    }
+    
+    router.replace(`${pathname}?${params.toString()}`);
+  };
+
   const filteredCustomers = customers.filter(c => 
-    c.name.toLowerCase().includes(search.toLowerCase()) || 
-    c.email.toLowerCase().includes(search.toLowerCase())
+    (c.name || '').toLowerCase().includes(search.toLowerCase()) || 
+    (c.email || '').toLowerCase().includes(search.toLowerCase()) ||
+    (c.phone || '').toLowerCase().includes(search.toLowerCase())
   );
 
   if (loading) return <div>Loading customers...</div>;
@@ -38,7 +63,7 @@ export default function CustomersPage() {
           type="text" 
           placeholder="Search customers..." 
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleSearchChange}
           className="border border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-black focus:border-black text-sm w-full sm:w-64"
         />
       </div>
@@ -77,3 +102,12 @@ export default function CustomersPage() {
     </div>
   );
 }
+
+export default function CustomersPage() {
+  return (
+    <Suspense fallback={<div>Loading customers...</div>}>
+      <CustomersContent />
+    </Suspense>
+  );
+}
+

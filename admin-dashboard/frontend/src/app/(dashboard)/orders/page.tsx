@@ -1,12 +1,16 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { Eye } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 import { io } from 'socket.io-client';
 
-export default function OrdersPage() {
+function OrdersContent() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get('search') || '';
+
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -56,6 +60,18 @@ export default function OrdersPage() {
 
   if (loading) return <div className="p-6 text-gray-500 font-medium">Loading orders...</div>;
 
+  const filteredOrders = orders.filter((order) => {
+    const searchLower = search.toLowerCase();
+    const orderId = order._id || '';
+    const customerName = order.shippingAddress?.name || order.user?.name || 'guest';
+    const customerPhone = order.shippingAddress?.phone || '';
+    return (
+      orderId.toLowerCase().includes(searchLower) ||
+      customerName.toLowerCase().includes(searchLower) ||
+      customerPhone.toLowerCase().includes(searchLower)
+    );
+  });
+
   return (
     <div>
       <h1 className="text-2xl font-bold text-gray-900 mb-6">Orders</h1>
@@ -74,7 +90,7 @@ export default function OrdersPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {orders.map((order) => (
+              {filteredOrders.map((order) => (
                 <tr key={order._id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{order._id.substring(0, 8)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -112,7 +128,7 @@ export default function OrdersPage() {
                   </td>
                 </tr>
               ))}
-              {orders.length === 0 && (
+              {filteredOrders.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-4 text-center text-gray-500">No orders found.</td>
                 </tr>
@@ -124,3 +140,12 @@ export default function OrdersPage() {
     </div>
   );
 }
+
+export default function OrdersPage() {
+  return (
+    <Suspense fallback={<div className="p-6 text-gray-500 font-medium">Loading orders...</div>}>
+      <OrdersContent />
+    </Suspense>
+  );
+}
+

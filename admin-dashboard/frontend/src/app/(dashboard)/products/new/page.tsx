@@ -10,6 +10,7 @@ export default function NewProductPage() {
   const [formData, setFormData] = useState({
     name: '',
     price: '',
+    discountPrice: '',
     description: '',
     category: '',
     stockQuantity: '',
@@ -21,9 +22,13 @@ export default function NewProductPage() {
     e.preventDefault();
     setLoading(true);
     try {
+      const priceVal = Number(formData.price);
+      const discountPriceVal = formData.discountPrice ? Number(formData.discountPrice) : priceVal;
+      
       await api.post('/admin/products', {
         ...formData,
-        price: Number(formData.price),
+        price: priceVal,
+        discountPrice: discountPriceVal,
         inventory: Number(formData.stockQuantity),
         isSoldOut: formData.status === 'Sold Out',
         images: [formData.image]
@@ -52,8 +57,13 @@ export default function NewProductPage() {
           </div>
           
           <div>
-            <label className="block text-sm font-medium text-gray-700">Price ($)</label>
+            <label className="block text-sm font-medium text-gray-700">Product Price (₹)</label>
             <input required type="number" step="0.01" name="price" value={formData.price} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-black focus:border-black sm:text-sm" />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Off Price (₹) <span className="text-gray-400 font-normal text-xs">(Optional)</span></label>
+            <input type="number" step="0.01" name="discountPrice" value={formData.discountPrice} onChange={handleChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-black focus:border-black sm:text-sm" placeholder="Leave empty for no discount" />
           </div>
 
           <div>

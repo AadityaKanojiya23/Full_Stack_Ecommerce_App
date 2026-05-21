@@ -211,7 +211,7 @@ export const AppProvider = ({ children }) => {
           setCategories(catData.categories || []);
 
           // Fetch products
-          const prodRes = await fetch(`${API_BASE}/products`);
+          const prodRes = await fetch(`${API_BASE}/products?limit=1000`);
           const prodData = await prodRes.json();
           setProducts(processProducts(prodData.products || []));
 

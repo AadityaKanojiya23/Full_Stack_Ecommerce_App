@@ -1,7 +1,46 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { Menu, Bell, Search } from 'lucide-react';
+import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+
+function SearchInput() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const [searchVal, setSearchVal] = useState('');
+
+  useEffect(() => {
+    setSearchVal(searchParams.get('search') || '');
+  }, [searchParams]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setSearchVal(val);
+    
+    const params = new URLSearchParams(searchParams.toString());
+    if (val) {
+      params.set('search', val);
+    } else {
+      params.delete('search');
+    }
+    
+    router.replace(`${pathname}?${params.toString()}`);
+  };
+
+  return (
+    <div className="relative">
+      <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+      <input
+        type="text"
+        placeholder="Search..."
+        value={searchVal}
+        onChange={handleSearchChange}
+        className="pl-9 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
+      />
+    </div>
+  );
+}
 
 const Header = ({ setIsOpen }: { setIsOpen: (val: boolean) => void }) => {
   return (
@@ -19,13 +58,10 @@ const Header = ({ setIsOpen }: { setIsOpen: (val: boolean) => void }) => {
       </div>
 
       <div className="flex items-center space-x-4">
-        <div className="relative hidden sm:block">
-          <Search className="h-4 w-4 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
-            placeholder="Search..."
-            className="pl-9 pr-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black"
-          />
+        <div className="hidden sm:block">
+          <Suspense fallback={<div className="w-48 h-10 bg-gray-100 rounded-md animate-pulse"></div>}>
+            <SearchInput />
+          </Suspense>
         </div>
         <button className="p-1 text-gray-400 hover:text-gray-500 relative">
           <Bell className="h-5 w-5" />
@@ -40,3 +76,4 @@ const Header = ({ setIsOpen }: { setIsOpen: (val: boolean) => void }) => {
 };
 
 export default Header;
+

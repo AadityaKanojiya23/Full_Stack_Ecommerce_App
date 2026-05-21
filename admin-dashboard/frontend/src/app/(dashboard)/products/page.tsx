@@ -1,13 +1,21 @@
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { Plus, Edit2, Trash2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 import api from '@/lib/api';
 
-export default function ProductsPage() {
+function ProductsContent() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get('search') || '';
+
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  
+  const [editingPriceId, setEditingPriceId] = useState<string | null>(null);
+  const [editPriceVal, setEditPriceVal] = useState<string>('');
+  const [editDiscountPriceVal, setEditDiscountPriceVal] = useState<string>('');
 
   useEffect(() => {
     fetchProducts();
@@ -15,7 +23,7 @@ export default function ProductsPage() {
 
   const fetchProducts = async () => {
     try {
-      const res = await api.get('/products');
+      const res = await api.get('/products?limit=1000');
       setProducts(res.data.products || res.data);
     } catch (err) {
       console.error(err);
@@ -48,7 +56,31 @@ export default function ProductsPage() {
     }
   };
 
+  const handleSaveInlinePrice = async (id: string) => {
+    try {
+      const p = Number(editPriceVal);
+      const dp = editDiscountPriceVal ? Number(editDiscountPriceVal) : undefined;
+      await api.put(`/admin/products/${id}`, { 
+        price: p,
+        discountPrice: dp !== undefined ? dp : p
+      });
+      setEditingPriceId(null);
+      fetchProducts();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update price');
+    }
+  };
+
   if (loading) return <div>Loading products...</div>;
+
+  const filteredProducts = products.filter((product) => {
+    const searchLower = search.toLowerCase();
+    return (
+      product.name?.toLowerCase().includes(searchLower) ||
+      product.category?.toLowerCase().includes(searchLower)
+    );
+  });
 
   return (
     <div>
@@ -76,7 +108,7 @@ export default function ProductsPage() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {products.map((product) => {
+              {filteredProducts.map((product) => {
                 const currentStatus = product.status || (product.isSoldOut || product.inventory <= 0 ? 'Sold Out' : 'In Stock');
                 return (
                 <tr key={product._id}>
@@ -91,7 +123,69 @@ export default function ProductsPage() {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.category}</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹{(product.discountPrice || product.price)?.toFixed(2)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {editingPriceId === product._id ? (
+                      <div className="flex flex-col gap-1.5 p-1 bg-gray-50 rounded border border-gray-200 w-36">
+                        <div className="flex items-center justify-between gap-1">
+                          <span className="text-[10px] text-gray-500 font-semibold">Price:</span>
+                          <input
+                            type="number"
+                            value={editPriceVal}
+                            onChange={(e) => setEditPriceVal(e.target.value)}
+                            className="w-20 text-xs border border-gray-300 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-black"
+                          />
+                        </div>
+                        <div className="flex items-center justify-between gap-1">
+                          <span className="text-[10px] text-gray-500 font-semibold">Off:</span>
+                          <input
+                            type="number"
+                            value={editDiscountPriceVal}
+                            onChange={(e) => setEditDiscountPriceVal(e.target.value)}
+                            className="w-20 text-xs border border-gray-300 rounded px-1.5 py-0.5 focus:outline-none focus:ring-1 focus:ring-black"
+                            placeholder="None"
+                          />
+                        </div>
+                        <div className="flex justify-end gap-2 mt-1">
+                          <button
+                            onClick={() => handleSaveInlinePrice(product._id)}
+                            className="bg-black text-white text-[10px] px-2 py-0.5 rounded hover:bg-gray-800"
+                          >
+                            Save
+                          </button>
+                          <button
+                            onClick={() => setEditingPriceId(null)}
+                            className="bg-white text-gray-700 text-[10px] border border-gray-300 px-2 py-0.5 rounded hover:bg-gray-50"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center space-x-2">
+                        <div className="flex flex-col">
+                          <span className="font-semibold text-gray-900">
+                            ₹{(product.discountPrice || product.price)?.toFixed(2)}
+                          </span>
+                          {product.discountPrice && product.discountPrice < product.price && (
+                            <span className="text-xs text-gray-400 line-through">
+                              ₹{product.price?.toFixed(2)}
+                            </span>
+                          )}
+                        </div>
+                        <button 
+                          onClick={() => {
+                            setEditingPriceId(product._id);
+                            setEditPriceVal(product.price.toString());
+                            setEditDiscountPriceVal((product.discountPrice !== undefined ? product.discountPrice : product.price).toString());
+                          }} 
+                          className="text-gray-400 hover:text-black p-1 rounded hover:bg-gray-100"
+                          title="Edit Price"
+                        >
+                          <Edit2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    )}
+                  </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product.inventory || product.stockQuantity || 0}</td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <select
@@ -120,7 +214,7 @@ export default function ProductsPage() {
                   </td>
                 </tr>
               ) })}
-              {products.length === 0 && (
+              {filteredProducts.length === 0 && (
                 <tr>
                   <td colSpan={6} className="px-6 py-4 text-center text-gray-500">No products found.</td>
                 </tr>
@@ -132,3 +226,12 @@ export default function ProductsPage() {
     </div>
   );
 }
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div>Loading products...</div>}>
+      <ProductsContent />
+    </Suspense>
+  );
+}
+

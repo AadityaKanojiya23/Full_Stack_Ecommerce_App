@@ -143,6 +143,17 @@ export let mockUsers = [
     addresses: [],
     wishlist: [],
     createdAt: new Date('2026-01-01')
+  },
+  {
+    _id: 'u3',
+    name: 'Amore Admin',
+    email: 'admin@amore.com',
+    password: '$2a$10$OSg.DOjImav3NJE64V0Kre3MUPg.nFgl74HYEtANmV4FQ.a04dLYu', // bcrypt for 'admin123'
+    role: 'admin',
+    avatar: 'https://i.ibb.co/k2WqSjyN/4cd54da7-aa9a-4555-9569-16d98e04b6b7.png',
+    addresses: [],
+    wishlist: [],
+    createdAt: new Date('2026-01-01')
   }
 ];
 
