@@ -233,7 +233,7 @@ function CheckoutContent() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 print:py-0 bg-background text-foreground">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-36 sm:pb-10 space-y-8 print:py-0 bg-background text-foreground">
       
       {/* Title block hides in print layout */}
       <div className="flex items-center gap-4 justify-between border-b border-border-color pb-4 print:hidden">

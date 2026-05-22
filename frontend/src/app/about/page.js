@@ -5,7 +5,7 @@ import Link from 'next/link';
 
 export default function AboutStoryPage() {
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16 bg-background text-foreground animate-fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-36 sm:pb-12 space-y-16 bg-background text-foreground animate-fade-in">
       
       {/* 1. JUMBOTRON HEADER */}
       <div className="bg-cream border border-border-color p-8 md:p-14 rounded-[32px] text-center space-y-4 shadow-sm relative overflow-hidden">

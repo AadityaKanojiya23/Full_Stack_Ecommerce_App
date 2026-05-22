@@ -128,7 +128,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8 bg-background text-foreground">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-36 sm:pb-10 space-y-8 bg-background text-foreground">
       
       <h1 className="text-2xl md:text-3.5xl font-serif font-medium text-navy flex items-center gap-2">
         Shopping Cart <span className="text-xs bg-orange/15 text-orange border border-orange/20 font-medium px-3 py-1 rounded-full">{cart.length} Confectioneries</span>

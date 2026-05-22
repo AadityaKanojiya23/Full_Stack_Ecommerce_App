@@ -121,7 +121,7 @@ function DashboardContent() {
   const wishlistProducts = products.filter(p => wishlist.includes(p._id));
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 bg-background text-foreground animate-fade-in">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-36 sm:pb-10 space-y-10 bg-background text-foreground animate-fade-in">
       
       {/* Profile Jumbotron */}
       <div className="bg-cream border border-border-color p-6 md:p-8 rounded-[32px] flex flex-col md:flex-row justify-between items-center gap-6 shadow-sm">

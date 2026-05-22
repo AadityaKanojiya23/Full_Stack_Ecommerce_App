@@ -135,7 +135,7 @@ export default function ProductDetailsPage({ params }) {
     : 0;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-12 bg-background text-foreground">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-36 sm:pb-10 space-y-12 bg-background text-foreground">
       
       {/* Dynamic breadcrumb */}
       <div className="text-xs text-navy/50 font-medium uppercase tracking-wider flex items-center gap-2">

@@ -680,7 +680,7 @@ function GlobalLayout({ children }) {
       </section>
 
       {/* ROBUST FOOTER COMPONENT */}
-      <footer className="bg-navy text-background/95 pt-16 pb-8 border-t-4 border-orange">
+      <footer className="bg-navy text-background/95 pt-16 pb-28 sm:pb-8 border-t-4 border-orange">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
           
           {/* Col 1: Brand Info */}

@@ -125,7 +125,7 @@ function CategoryContent({ slug }) {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10 bg-background text-foreground">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-36 sm:pb-10 space-y-10 bg-background text-foreground">
       
       {/* Category Jumbotron Header */}
       <div className="bg-cream border border-border-color p-8 md:p-12 rounded-[32px] text-center space-y-4 shadow-sm relative overflow-hidden">
