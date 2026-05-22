@@ -5,7 +5,7 @@ import {
   Sparkles, Heart, ShoppingBag, Eye, Star, ChevronLeft, ChevronRight,
   Clock, Award, Flame, Quote, Send, ArrowRight, ShieldCheck, HelpCircle, X,
   Play, Pause, Volume2, VolumeX, Smartphone, Tv, CheckCircle, Lightbulb, Code,
-  Zap
+  Zap, Gift, Moon, Crown, PartyPopper
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -427,11 +427,71 @@ export default function HomePage() {
 
   // Rectangular Offer Banners
   const promoBanners = [
-    { id: 1, title: 'Buy 1 Get 1 Cupcake Special', desc: 'Add 2 cupcakes to your bag, get one free.', bg: 'from-orange/90 to-gold', tag: 'Limited Offer', link: '/category/cupcakes' },
-    { id: 2, title: 'Midnight Delivery Premium', desc: 'Guaranteed surprise drop at 11:59 PM.', bg: 'from-navy-dark to-navy', tag: 'Highly Rated', link: '/category/premium-cakes' },
-    { id: 3, title: 'Eggless Pastry Summer Drop', desc: 'Refreshing Mango & Strawberry layers.', bg: 'from-orange/80 to-orange-hover', tag: 'New Arrivals', link: '/category/pastries' },
-    { id: 4, title: 'Premium Festive Combo Boxes', desc: 'Candles, gold cards, balloons, & fresh flowers.', bg: 'from-gold to-orange/70', tag: 'Festive Pack', link: '/category/combos' }
+    {
+      id: 1,
+      title: 'Buy 1 Get 1 Cupcake Special',
+      desc: 'Add 2 cupcakes to your bag, get one free.',
+      bg: 'bg-[#FAF8F5]', // Soft warm linen cream
+      border: 'border-[#EAE5DF] hover:border-[#D97706]/35',
+      text: 'text-navy',
+      descColor: 'text-navy/60',
+      tagBg: 'bg-[#F4EFEA] text-[#D97706] border-[#EAE5DF]',
+      iconBg: 'text-[#D97706]',
+      tag: 'Limited Offer',
+      link: '/category/cupcakes'
+    },
+    {
+      id: 2,
+      title: 'Midnight Delivery Premium',
+      desc: 'Guaranteed surprise drop at 11:59 PM.',
+      bg: 'bg-[#F4F6F9]', // Clean slate white
+      border: 'border-[#E2E6EA] hover:border-[#1D4ED8]/25',
+      text: 'text-navy',
+      descColor: 'text-navy/60',
+      tagBg: 'bg-[#EAEFF4] text-[#1D4ED8] border-[#D1DFEC]',
+      iconBg: 'text-[#1D4ED8]',
+      tag: 'Highly Rated',
+      link: '/category/premium-cakes'
+    },
+    {
+      id: 3,
+      title: 'Eggless Pastry Summer Drop',
+      desc: 'Refreshing Mango & Strawberry layers.',
+      bg: 'bg-[#FAF6F6]', // Faint rose blush
+      border: 'border-[#EAE1E1] hover:border-red-500/25',
+      text: 'text-navy',
+      descColor: 'text-navy/60',
+      tagBg: 'bg-[#F4EAEA] text-red-500 border-[#ECD8D8]',
+      iconBg: 'text-red-500',
+      tag: 'New Arrivals',
+      link: '/category/pastries'
+    },
+    {
+      id: 4,
+      title: 'Premium Festive Combo Boxes',
+      desc: 'Candles, gold cards, balloons, & fresh flowers.',
+      bg: 'bg-[#F5F7F6]', // Soft sage cream
+      border: 'border-[#E1EAE5] hover:border-teal-600/25',
+      text: 'text-navy',
+      descColor: 'text-navy/60',
+      tagBg: 'bg-[#EAEFEA] text-teal-600 border-[#D8ECD8]',
+      iconBg: 'text-teal-600',
+      tag: 'Festive Pack',
+      link: '/category/combos'
+    }
   ];
+
+  // Helper for promo banner premium icons
+  const getPromoIcon = (id, iconClass = '') => {
+    const cls = `w-5 h-5 ${iconClass} group-hover:scale-110 transition-transform duration-300`;
+    switch (id) {
+      case 1: return <Gift className={cls} />;
+      case 2: return <Moon className={cls} />;
+      case 3: return <Sparkles className={cls} />;
+      case 4: return <Crown className={cls} />;
+      default: return <Sparkles className={cls} />;
+    }
+  };
 
   // Testimonials list (Amore Cakes)
   const testimonials = [
@@ -605,19 +665,37 @@ export default function HomePage() {
 
       {/* 2. RECTANGULAR OFFER PROMO BANNERS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 md:gap-6">
           {promoBanners.map((p) => (
             <Link
               key={p.id}
               href={p.link}
-              className={`p-6 rounded-3xl bg-gradient-to-br ${p.bg} text-white flex flex-col justify-between h-44 hover:scale-[1.03] transition-transform duration-300 shadow-md cursor-pointer relative overflow-hidden group`}
+              className={`p-4 md:p-6 rounded-[20px] ${p.bg} ${p.text} flex flex-col justify-between h-[154px] xs:h-[168px] md:h-48 hover:-translate-y-1 transition-all duration-300 border ${p.border} cursor-pointer relative overflow-hidden group hover:shadow-md`}
             >
-              <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-white/10 rounded-full group-hover:scale-150 transition-transform duration-500"></div>
-              <div>
-                <span className="text-[10px] font-medium uppercase tracking-wider bg-white/20 px-2 py-0.5 rounded-full">{p.tag}</span>
-                <h3 className="text-lg font-medium font-serif mt-2 leading-tight">{p.title}</h3>
+              {/* Premium Icon Container (Sleek & Professional) */}
+              <div className="absolute top-3.5 right-3.5 md:top-5 md:right-5 p-1.5 md:p-2 rounded-lg md:rounded-xl bg-white/60 dark:bg-black/10 border border-black/5 dark:border-white/5 shadow-2xs transition-all duration-300 group-hover:scale-105">
+                <div className={`${p.iconBg} flex items-center justify-center`}>
+                  {getPromoIcon(p.id, "w-4 h-4 md:w-5 md:h-5")}
+                </div>
               </div>
-              <p className="text-white/80 text-xs font-normal">{p.desc}</p>
+
+              <div>
+                <span className={`inline-flex items-center text-[8px] md:text-[9px] font-semibold uppercase tracking-widest px-2 md:px-2.5 py-0.5 rounded-full border ${p.tagBg} shadow-2xs`}>
+                  {p.tag}
+                </span>
+                <h3 className="text-xs xs:text-sm md:text-base font-medium font-serif mt-2.5 md:mt-4 tracking-tight leading-tight md:leading-snug max-w-[72%] transition-colors duration-300">
+                  {p.title}
+                </h3>
+              </div>
+
+              <div className="flex items-end justify-between mt-1 md:mt-2 relative z-10">
+                <p className={`${p.descColor} text-[10px] md:text-xs font-normal max-w-[75%] md:max-w-[78%] leading-normal md:leading-relaxed hidden xs:line-clamp-2 md:block`}>
+                  {p.desc}
+                </p>
+                <div className="w-7 h-7 md:w-8 md:h-8 rounded-full border border-current/10 bg-white/40 dark:bg-black/10 flex items-center justify-center group-hover:bg-orange group-hover:text-white group-hover:border-transparent transition-all duration-300 shrink-0 shadow-2xs">
+                  <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 translate-x-0 group-hover:translate-x-0.5 transition-transform" />
+                </div>
+              </div>
             </Link>
           ))}
         </div>
@@ -850,35 +928,35 @@ export default function HomePage() {
         </div>
 
         {/* Showcase Mockup Workspace Panel */}
-        <div className="bg-[#FFFDF9] dark:bg-navy-dark/40 border border-border-color/60 p-6 md:p-10 rounded-[36px] shadow-lg">
-          <div className="space-y-6">
-            <div className="flex justify-between items-center pr-2">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 bg-success rounded-full animate-pulse"></span>
-                <span className="text-[10px] font-medium uppercase text-navy/50 tracking-wider">Interactive Video Carousel</span>
+        <div className="bg-[#FFFDF9] dark:bg-navy-dark/40 border border-border-color/60 p-3.5 xs:p-5 md:p-10 rounded-[24px] md:rounded-[36px] shadow-md hover:shadow-lg transition-shadow">
+          <div className="space-y-4 md:space-y-6">
+            <div className="flex justify-between items-center pr-1 md:pr-2">
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <span className="w-2 h-2 md:w-2.5 md:h-2.5 bg-success rounded-full animate-pulse"></span>
+                <span className="text-[9px] md:text-[10px] font-medium uppercase text-navy/50 tracking-wider">Interactive Video Carousel</span>
               </div>
-              <div className="flex gap-2">
+              <div className="flex gap-1.5 md:gap-2">
                 <button
                   onClick={() => {
                     if (shortsScrollRef.current) {
-                      shortsScrollRef.current.scrollBy({ left: -260, behavior: 'smooth' });
+                      shortsScrollRef.current.scrollBy({ left: -220, behavior: 'smooth' });
                     }
                   }}
-                  className="p-2 border border-border-color/80 hover:bg-cream rounded-xl text-navy transition-all shadow-sm"
+                  className="p-1.5 md:p-2 border border-border-color/80 hover:bg-cream rounded-lg md:rounded-xl text-navy transition-all shadow-sm"
                   title="Scroll Left"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-3.5 h-3.5 md:w-4 h-4" />
                 </button>
                 <button
                   onClick={() => {
                     if (shortsScrollRef.current) {
-                      shortsScrollRef.current.scrollBy({ left: 260, behavior: 'smooth' });
+                      shortsScrollRef.current.scrollBy({ left: 220, behavior: 'smooth' });
                     }
                   }}
-                  className="p-2 border border-border-color/80 hover:bg-cream rounded-xl text-navy transition-all shadow-sm"
+                  className="p-1.5 md:p-2 border border-border-color/80 hover:bg-cream rounded-lg md:rounded-xl text-navy transition-all shadow-sm"
                   title="Scroll Right"
                 >
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-3.5 h-3.5 md:w-4 h-4" />
                 </button>
               </div>
             </div>
@@ -896,7 +974,7 @@ export default function HomePage() {
                   }
                 }
               }}
-              className="flex gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-4 px-1"
+              className="flex gap-3 md:gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-4 px-1"
             >
               {shortVideos.map((item, index) => {
                 const liked = !!isLiked[item.id];
@@ -904,10 +982,10 @@ export default function HomePage() {
                 return (
                   <div
                     key={item.id}
-                    className="w-56 shrink-0 bg-white dark:bg-[#0D2A6B] border border-border-color/60 rounded-[28px] p-3 flex flex-col justify-between hover:scale-[1.02] hover:border-orange/60 transition-all duration-300 shadow-sm hover:shadow-md relative overflow-hidden group"
+                    className="w-[115px] xs:w-36 sm:w-44 md:w-56 shrink-0 bg-white dark:bg-[#0D2A6B] border border-border-color/60 rounded-[14px] md:rounded-[28px] p-1.5 md:p-3 flex flex-col justify-between hover:scale-[1.02] hover:border-orange/60 transition-all duration-300 shadow-sm hover:shadow-md relative overflow-hidden group"
                   >
                     {/* Video Thumbnail Container */}
-                    <div className="rounded-[22px] overflow-hidden aspect-[9/14] border border-border-color/40 relative cursor-pointer" onClick={() => handleOpenVideoPlayer(item)}>
+                    <div className="rounded-[10px] md:rounded-[22px] overflow-hidden aspect-[9/14] border border-border-color/40 relative cursor-pointer" onClick={() => handleOpenVideoPlayer(item)}>
                       <img
                         src={item.thumbnail}
                         alt={item.title}
@@ -918,42 +996,42 @@ export default function HomePage() {
 
                       {/* Top action: Featured badge or Likes overlay */}
                       {item.isFeatured && (
-                        <span className="absolute top-3 left-3 bg-gold text-navy font-medium text-[9px] px-2.5 py-1 rounded-full border border-gold-light/40 shadow-sm tracking-wider uppercase">
+                        <span className="absolute top-1 left-1 bg-gold text-navy font-medium text-[6px] xs:text-[8px] md:text-[9px] px-1 xs:px-2 py-0.5 rounded-full border border-gold-light/40 shadow-sm tracking-wider uppercase">
                           👑 Featured
                         </span>
                       )}
 
                       {/* Center: Play Button Overlay */}
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-12 h-12 rounded-full glass border border-white/40 flex items-center justify-center text-white shadow-lg group-hover:scale-110 group-hover:bg-orange group-hover:border-transparent transition-all duration-300 animate-pulse-play">
-                          <Play className="w-5 h-5 fill-white text-white translate-x-[1px]" />
+                        <div className="w-7 h-7 xs:w-9 xs:h-9 md:w-12 md:h-12 rounded-full glass border border-white/40 flex items-center justify-center text-white shadow-lg group-hover:scale-110 group-hover:bg-orange group-hover:border-transparent transition-all duration-300 animate-pulse-play">
+                          <Play className="w-2.5 h-2.5 xs:w-3.5 xs:h-3.5 md:w-5 md:h-5 fill-white text-white translate-x-[1px]" />
                         </div>
                       </div>
 
                       {/* Bottom Info inside thumb: Duration */}
-                      <span className="absolute bottom-3 left-3 bg-black/55 backdrop-blur-sm text-white font-medium text-[10px] px-2 py-0.5 rounded-full tracking-wider">
+                      <span className="absolute bottom-1 left-1 bg-black/55 backdrop-blur-sm text-white font-medium text-[7px] xs:text-[8px] md:text-[10px] px-1 py-0.5 rounded-full tracking-wider">
                         {item.duration}
                       </span>
                     </div>
 
                     {/* Video Caption & Metadata Below Thumbnail */}
-                    <div className="mt-3.5 space-y-1 px-1">
+                    <div className="mt-1.5 md:mt-3 space-y-0.5 md:space-y-1 px-0.5">
                       <div className="flex items-center justify-between">
-                        <h3 className="font-serif font-medium text-navy text-sm group-hover:text-orange transition-colors cursor-pointer truncate flex-grow mr-2" onClick={() => handleOpenVideoPlayer(item)}>
+                        <h3 className="font-serif font-medium text-navy text-[10px] xs:text-xs md:text-sm group-hover:text-orange transition-colors cursor-pointer truncate flex-grow mr-1" onClick={() => handleOpenVideoPlayer(item)}>
                           {item.title}
                         </h3>
                         <button
                           onClick={(e) => handleLikeShort(item.id, e)}
-                          className="p-1 hover:bg-cream rounded-full text-navy/60 hover:text-red-500 transition-colors shrink-0"
+                          className="p-0.5 hover:bg-cream rounded-full text-navy/60 hover:text-red-500 transition-colors shrink-0"
                           title="Like moment"
                         >
-                          <Heart className={`w-4 h-4 transition-transform active:scale-150 ${liked ? 'fill-red-500 text-red-500 scale-105' : ''}`} />
+                          <Heart className={`w-2.5 h-2.5 xs:w-3.5 xs:h-3.5 md:w-4 h-4 transition-transform active:scale-150 ${liked ? 'fill-red-500 text-red-500 scale-105' : ''}`} />
                         </button>
                       </div>
-                      <p className="text-[11px] text-navy/50 font-normal line-clamp-2 leading-relaxed">
+                      <p className="hidden sm:line-clamp-2 md:block text-[9px] md:text-[11px] text-navy/50 font-normal leading-normal md:leading-relaxed">
                         {item.desc}
                       </p>
-                      <div className="flex items-center justify-between text-[9px] font-medium uppercase text-navy/40 pt-1.5 border-t border-border-color/20">
+                      <div className="flex items-center justify-between text-[7px] xs:text-[8px] md:text-[9px] font-medium uppercase text-navy/40 pt-1 md:pt-1.5 border-t border-border-color/20">
                         <span>{item.views} Views</span>
                         <span>{likesVal} Likes</span>
                       </div>
@@ -996,14 +1074,14 @@ export default function HomePage() {
           <h2 className="text-2xl md:text-3.5xl font-serif font-medium text-navy">Frequently Asked Questions</h2>
           <p className="text-xs md:text-sm text-navy/60 font-normal">Everything you need to know about custom cakes, delivery timetables, and freshness.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 gap-3.5 md:gap-6">
           {faqs.map((faq, index) => (
-            <div key={index} className="bg-card-bg p-6 rounded-3xl border border-border-color space-y-2.5 shadow-sm hover:shadow-md transition-shadow">
-              <h3 className="font-serif font-medium text-navy text-base flex gap-2">
-                <HelpCircle className="w-5 h-5 text-orange shrink-0" />
+            <div key={index} className="bg-card-bg p-3.5 md:p-6 rounded-[20px] md:rounded-[30px] border border-border-color space-y-1.5 md:space-y-2.5 shadow-sm hover:shadow-md transition-shadow">
+              <h3 className="font-serif font-medium text-navy text-xs xs:text-sm md:text-base flex gap-1.5 md:gap-2">
+                <HelpCircle className="w-4 h-4 md:w-5 md:h-5 text-orange shrink-0 mt-0.5" />
                 <span>{faq.q}</span>
               </h3>
-              <p className="text-navy/70 text-xs md:text-sm pl-7 leading-relaxed font-normal">{faq.a}</p>
+              <p className="text-navy/70 text-[10px] md:text-sm pl-5 md:pl-7 leading-normal md:leading-relaxed font-normal">{faq.a}</p>
             </div>
           ))}
         </div>
