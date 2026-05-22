@@ -171,7 +171,7 @@ export default function CartPage() {
                     className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-2xl border border-border-color shadow-sm"
                   />
                   <div className="space-y-1">
-                    <h3 className="font-serif font-medium text-navy text-sm sm:text-base truncate pr-6 leading-tight">{item.name}</h3>
+                    <h3 className="font-serif font-medium text-navy text-sm sm:text-base pr-12 whitespace-normal break-words leading-tight">{item.name}</h3>
                     
                     {/* Weight and flavor customizations labels */}
                     <div className="flex flex-wrap gap-1 mt-0.5 text-[9px] sm:text-[10px] font-medium normal-case text-navy/55">
