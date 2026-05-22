@@ -654,7 +654,7 @@ function GlobalLayout({ children }) {
       {isScrolled && <div className="h-[105px] md:h-[120px] print:hidden" />}
 
       {/* MAIN WEBSITE CONTENT PAGES */}
-      <main className="flex-grow flex flex-col">
+      <main className="flex-grow flex flex-col pb-20 sm:pb-0">
         {children}
       </main>
 
