@@ -164,29 +164,29 @@ export default function CartPage() {
                   <Trash className="w-4 h-4" />
                 </button>
 
-                <div className="flex gap-4 items-center flex-1 max-w-md">
+                <div className="flex gap-3 sm:gap-4 items-center flex-1 max-w-md">
                   <img 
                     src={item.image} 
                     alt={item.name} 
-                    className="w-20 h-20 object-cover rounded-2xl border border-border-color shadow-sm"
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-2xl border border-border-color shadow-sm"
                   />
                   <div className="space-y-1">
-                    <h3 className="font-serif font-medium text-navy text-base truncate pr-6 leading-tight">{item.name}</h3>
+                    <h3 className="font-serif font-medium text-navy text-sm sm:text-base truncate pr-6 leading-tight">{item.name}</h3>
                     
                     {/* Weight and flavor customizations labels */}
-                    <div className="flex flex-wrap gap-1.5 text-[10px] font-medium uppercase text-navy/55 mt-1">
-                      <span className="bg-cream px-2 py-0.5 rounded border border-border-color">Weight: {item.weight}</span>
-                      <span className="bg-cream px-2 py-0.5 rounded border border-border-color">Flavor: {item.flavor}</span>
+                    <div className="flex flex-wrap gap-1 mt-0.5 text-[9px] sm:text-[10px] font-medium normal-case text-navy/55">
+                      <span className="bg-cream px-1.5 py-0.5 rounded border border-border-color">Weight: {item.weight}</span>
+                      <span className="bg-cream px-1.5 py-0.5 rounded border border-border-color">Flavor: {item.flavor}</span>
                     </div>
 
                     {/* Add-ons list details */}
                     {addonsList.length > 0 && (
-                      <p className="text-[10px] font-medium text-success block">Modifications: {addonsList.join(', ')}</p>
+                      <p className="text-[9px] sm:text-[10px] font-medium text-success block">Modifications: {addonsList.join(', ')}</p>
                     )}
 
                     {/* Custom inscription message details */}
                     {item.cakeMessage && (
-                      <p className="text-[10px] font-medium italic text-navy/65 block truncate">Inscription: &quot;{item.cakeMessage}&quot;</p>
+                      <p className="text-[9px] sm:text-[10px] font-medium italic text-navy/65 block truncate">Inscription: &quot;{item.cakeMessage}&quot;</p>
                     )}
                   </div>
                 </div>
@@ -196,24 +196,24 @@ export default function CartPage() {
                   
                   {/* Item price sum */}
                   <div className="text-right">
-                    <span className="text-orange font-medium text-base block">₹{(basePrice + (item.addCandles ? 50 : 0) + (item.addFlowers ? 299 : 0) + (item.addChocolates ? 150 : 0)) * item.quantity}</span>
-                    <span className="text-navy/40 text-[10px] font-medium block">₹{basePrice + (item.addCandles ? 50 : 0) + (item.addFlowers ? 299 : 0) + (item.addChocolates ? 150 : 0)} each</span>
+                    <span className="text-orange font-medium text-sm sm:text-base block">₹{(basePrice + (item.addCandles ? 50 : 0) + (item.addFlowers ? 299 : 0) + (item.addChocolates ? 150 : 0)) * item.quantity}</span>
+                    <span className="text-navy/40 text-[9px] sm:text-[10px] font-medium block">₹{basePrice + (item.addCandles ? 50 : 0) + (item.addFlowers ? 299 : 0) + (item.addChocolates ? 150 : 0)} each</span>
                   </div>
 
                   {/* Quantity selector buttons */}
-                  <div className="flex items-center gap-2 border border-border-color bg-cream rounded-xl py-1.5 px-3">
+                  <div className="flex items-center gap-1.5 border border-border-color bg-cream rounded-xl py-1 px-2.5 sm:py-1.5 sm:px-3">
                     <button 
                       onClick={() => updateCartQuantity(item.cartItemId, item.quantity - 1)}
                       className="p-1 hover:bg-background rounded text-navy transition-colors"
                     >
-                      <Minus className="w-3.5 h-3.5" />
+                      <Minus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </button>
-                    <span className="text-xs font-medium text-navy w-4 text-center">{item.quantity}</span>
+                    <span className="text-[11px] sm:text-xs font-medium text-navy w-4 text-center">{item.quantity}</span>
                     <button 
                       onClick={() => updateCartQuantity(item.cartItemId, item.quantity + 1)}
                       className="p-1 hover:bg-background rounded text-navy transition-colors"
                     >
-                      <Plus className="w-3.5 h-3.5" />
+                      <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </button>
                   </div>
 
